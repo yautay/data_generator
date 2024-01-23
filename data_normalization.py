@@ -3,6 +3,7 @@ from sklearn.preprocessing import MinMaxScaler
 from data.path import PATH_DATA
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
 import numpy as np
 from sklearn.model_selection import train_test_split
 
@@ -34,6 +35,10 @@ scaler = MinMaxScaler()
 
 products_data[keys] = scaler.fit_transform(products_data[keys])
 
+
+products_data = products_data.replace({np.nan: -1})
+
+
 print(products_data.head())
 
 # rysuję macierz powiązań (?) za pomocą pandasa
@@ -43,6 +48,29 @@ print(products_data.head())
 # plt.show()
 
 # narazie gówno widać....
-X = products_data.iloc[:, 1:-1]
+
+# buduję dane wejściowe i dane oczekiwane w formie 2 datasetów
+X = products_data.iloc[:, 2:-1]
+y = products_data.loc[:, 'category']
+
+# tworzę split testowy i do nauki (20%)
+X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, shuffle=True)
 
 
+# test z regersją liniową
+# wyuczenie
+
+lr = LinearRegression()
+lr.fit(X_train, y_train)
+
+#score_treningu
+
+score = lr.score(X_test, y_test)
+print(score)
+
+#test
+
+print(X_test.iloc[:2, :])
+print(lr.predict(X_test.iloc[:2, :]))
+print(y_test.iloc[:2])
