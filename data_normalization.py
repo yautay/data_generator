@@ -39,8 +39,6 @@ products_data[keys] = scaler.fit_transform(products_data[keys])
 products_data = products_data.replace({np.nan: -1})
 
 
-print(products_data.head())
-
 # rysuję macierz powiązań (?) za pomocą pandasa
 # https://pandas.pydata.org/docs/reference/api/pandas.plotting.scatter_matrix.html
 
@@ -67,10 +65,12 @@ lr.fit(X_train, y_train)
 #score_treningu
 
 score = lr.score(X_test, y_test)
-print(score)
+print("SCORE: ", score)
 
 #test
 
-print(X_test.iloc[:2, :])
-print(lr.predict(X_test.iloc[:2, :]))
-print(y_test.iloc[:2])
+prediction = pd.Series(lr.predict(X_test.iloc[:10, :]))
+results_expected = pd.Series(y_test.iloc[:10]).reset_index(drop=True)
+
+print(results_expected.compare(prediction, result_names=('expected', 'prediction')))
+
